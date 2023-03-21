@@ -1,6 +1,16 @@
 from elasticsearch import Elasticsearch
 import argparse
 
+'''
+Pass in arguments..example
+-username elastic
+-password xxxx
+-sourceindex kibana_sample_data_flights
+-targetindex field-usage-stats-indx
+-cloudid myelasticcloudid
+'''
+
+
 # Create argument parser
 parser = argparse.ArgumentParser(description='arg parser')
 
