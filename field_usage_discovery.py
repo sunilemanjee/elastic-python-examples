@@ -10,7 +10,6 @@ Pass in arguments..example
 -cloudid myelasticcloudid
 '''
 
-
 # Create argument parser
 parser = argparse.ArgumentParser(description='arg parser')
 
@@ -29,14 +28,18 @@ ELASTIC_PASSWORD = args.password
 
 # Define the index to query
 INDEX_NAME = args.sourceindex
+print(f"source index {INDEX_NAME}")
 
 ##index where results will be stored
 FUS_INDEX_NAME = args.targetindex
+print(f"target index {FUS_INDEX_NAME}")
 
 ELASTIC_USER = args.username
 
 # Found in the 'Manage Deployment' page
 CLOUD_ID = args.cloudid
+print(f"cloudID {CLOUD_ID}")
+
 
 # Create the client instance
 es = Elasticsearch(
@@ -47,24 +50,17 @@ es = Elasticsearch(
 # Successful response!
 es.info()
 
-query = {
-    "fields": ["*"],
-    "filter_path": "kibana_sample_data_flights.shards.stats.fields.*.any"
-}
-
 # Define the fields to include in the response
 fields = ["*"]
 
 # Define the filter path to use
-filter_path = "kibana_sample_data_flights.shards.stats.fields.*.any"
+filter_path = f"{INDEX_NAME}.shards.stats.fields.*.any"
 
 # Perform the query
 response = es.indices.field_usage_stats(index=INDEX_NAME, fields=fields, filter_path=filter_path)
 
-# response = es.indices.field_usage_stats(index='kibana_sample_data_flights')
-
 # Assuming that the document you provided is stored in the `doc` variable
-field_stats = response['kibana_sample_data_flights']['shards']
+field_stats = response[f'{INDEX_NAME}']['shards']
 field_totals = {}
 for shard in field_stats:
     for field, stats in shard['stats']['fields'].items():
